@@ -13,7 +13,6 @@ public enum DataType {
         for (DataType args: values()) {
             if(args.data.equals(data)){
                 return args;
-
             }
         }
         throw new IllegalArgumentException(data);

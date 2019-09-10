@@ -16,6 +16,7 @@ public class Editor {
         this.sortType = sortType;
         this.inputFiles = inputFiles;
         this.fileResult = fileResult;
+
     }
 
 

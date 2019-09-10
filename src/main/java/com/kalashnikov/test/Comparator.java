@@ -9,6 +9,7 @@ class Comparator {
     Comparator(DataType dataType, SortType sortType) {
         this.dataType = dataType;
         this.sortType = sortType;
+
     }
 
     int compare(String s1, String s2) {

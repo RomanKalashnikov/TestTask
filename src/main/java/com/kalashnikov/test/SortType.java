@@ -14,6 +14,7 @@ public enum SortType {
         for (SortType sortType : values()) {
                 if(sortType.args.equals(s)){
                     return sortType;
+
                 }
         }
         throw new IllegalArgumentException(s);

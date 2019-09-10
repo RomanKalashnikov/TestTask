@@ -21,6 +21,7 @@ class Sort {
         } catch (IOException e) {
             System.out.println("Невозможно скопировать результат слияния файлов");
             e.printStackTrace();
+
         }
 
     }

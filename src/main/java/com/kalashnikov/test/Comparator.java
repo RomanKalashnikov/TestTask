@@ -1,7 +1,5 @@
 package com.kalashnikov.test;
 
-import sun.invoke.empty.Empty;
-
 class Comparator {
     private final DataType dataType;
     private final SortType sortType;

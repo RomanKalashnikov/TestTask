@@ -35,10 +35,13 @@ public class Editor {
         this.fileResult = hasTypeSort ? new File(args[2]) : new File(args[1]);
         for (int i = hasTypeSort ? 3 : 2; i < args.length; i++) {
             final File inFile = new File(args[i]);
-            if (!inFile.exists()) {
-                throw new IllegalArgumentException("Входной файл " + args[i] + " пустой");
+            if (inFile.exists()) {
+                inputFiles.add(inFile);
             }
-            inputFiles.add(inFile);
+            else {
+                System.err.println("Входной файл " + args[i] + " пустой");
+
+            }
         }
     }
 

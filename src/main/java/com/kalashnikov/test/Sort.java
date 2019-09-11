@@ -54,7 +54,10 @@ class Sort {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+
+
         }
+        
     }
 
     private void writeEndOfFile(Comparable lastValue, BufferedWriter writer, BufferedReader fileDataReader) throws

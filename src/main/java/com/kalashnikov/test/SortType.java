@@ -4,21 +4,11 @@ public enum SortType {
     DESC("-d"),
     ASC("-a");
 
-    final String data;
+    final String key;
 
     SortType(String args) {
-        this.data = args;
+        this.key = args;
     }
 
-    public static SortType of(String data) {
 
-        for (SortType sortType : values()) {
-            if (sortType.data.equals(data)) {
-                return sortType;
-
-            }
-        }
-        throw new IllegalArgumentException(data);
-
-    }
 }

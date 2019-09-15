@@ -4,92 +4,110 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArgumentsParser {
-    DataType dataType;
-    SortType sortType;
+class ArgumentsParser {
+    private static final String KEY_PATTREN = "^-\\w";
+    private final String[] args;
+    private DataType dataType;
+    private SortType sortType;
+    private File fileResult;
+    private  List<File> inputFiles = new ArrayList<>();
+    private List<String> keysList = new ArrayList<>();
 
-    static File fileResult;
-
-    private static List<File> inputFiles = new ArrayList<>();
-    private ArrayList<SortType> sortTypeArray = new ArrayList<>();
-
-    private ArrayList<DataType> dataTypeArray = new ArrayList<>();
-    private ArrayList<String> keysList = new ArrayList<>();
-
-
-    ArgumentsParser() {
-
-
+    ArgumentsParser(String... args) {
+        this.args = args;
     }
 
-    public void parsingArg(String... args) {
-        if (args.length != 0 & args.length > 3) {
-            for (String s : args) {
-                if (s.matches("-?\\w")) {
-                    keysList.add(s);
+    void parsingArg() {
+        checkValidArgsCount(args.length);
 
-                } else {
-                    inputFiles.add(new File(s));
-                }
-            }
+        for (String s : args) {
+            parseOneArg(s);
         }
-        setFileResult();
-        setTypes();
-        checkFile(inputFiles);
 
+        setFileResult();
+        checkFile(inputFiles);
+        setTypes();
+    }
+
+    private void checkValidArgsCount(int countArgs) {
+        if (countArgs == 0 & countArgs < 3) {
+            throw new MyEx("Отсутсвует необходимое количество аргументов командной строки");
+        }
+    }
+
+    private void parseOneArg(String s) {
+        if (s.matches(KEY_PATTREN)) {
+            keysList.add(s);
+        } else {
+            inputFiles.add(new File(s));
+        }
     }
 
     private void checkFile(List<File> files) {
-        for (File f : files) {
-            if (!f.exists()) {
-                System.err.println("Неправильный путь входного файла " + f + " и он не будет добавлен в конечный" +
-                        " отсортированный файл ");
-                files.remove(f);
-            }
-
-        }
-    }
-
-
-    public void setTypes() {
-        for (String s : keysList) {
-            for (SortType type : SortType.values()) {
-                if(s.equals(type.data)){
-                    this.sortType = type;
-                }
-            }
-            for (DataType type : DataType.values()) {
-                if(s.equals(type.data)){
-                    this.dataType = type;
+            for (File f : files) {
+                if (!f.exists()) {
+                    System.err.printf("Файл отсутствует или указан неправильный путь %s " +
+                            "и он не будет добавлен в конечный отсортированный файл %n", f);
+                    files.remove(f);
                 }
             }
         }
-    }
+
 
     private void setFileResult() {
-        fileResult = new File(String.valueOf(inputFiles.get(0)));
-        inputFiles.remove(0);
+        if (inputFiles.size() < 3) {
+            throw new MyEx("Количество переданных файлов меньше трёх");
+        } else {
+            fileResult = inputFiles.get(0);
+            inputFiles.remove(fileResult);
+        }
     }
 
-    public static File getFileResult() {
+
+    private void setTypes() {
+        if (keysList.isEmpty()) {
+            throw new MyEx("Отсутствуют какие либо ключи указывающие на Тип данных или Тип сортировки");
+        } else {
+            this.dataType = getDataType(keysList);
+            this.sortType = getSortType(keysList);
+        }
+    }
+
+    private SortType getSortType(List<String> keysList) {
+        final SortType[] values = SortType.values();
+        for (SortType type : values) {
+            if (keysList.contains(type.key)) {
+                return type;
+            }
+        }
+        return SortType.ASC;
+    }
+
+    private DataType getDataType(List<String> keysList) {
+        final DataType[] values = DataType.values();
+        for (DataType dataType : values) {
+            if (keysList.contains(dataType.type)) {
+                return dataType;
+            }
+        }
+        throw new MyEx("Отсутствует корректный ключ Типа Данных");
+    }
+
+
+    File getFileResult() {
         return fileResult;
     }
 
-
-    public ArrayList<String> getKeysList() {
-        return keysList;
-    }
-
-    public static List<File> getInputFiles() {
+    List<File> getInputFiles() {
         return inputFiles;
     }
 
-    public ArrayList<SortType> getSortTypeArray() {
-        return sortTypeArray;
+    DataType getDataType() {
+        return dataType;
     }
 
-    public ArrayList<DataType> getDataTypeArray() {
-        return dataTypeArray;
+    SortType getSortType() {
+        return sortType;
     }
 }
 

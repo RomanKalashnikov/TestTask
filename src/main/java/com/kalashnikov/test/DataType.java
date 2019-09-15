@@ -4,20 +4,9 @@ public enum DataType {
     INTEGER("-i"),
     STRING("-s");
 
-
-    final String data;
+    final String type;
 
     DataType(String args) {
-        this.data = args;
-    }
-
-    public static DataType  of(String data) {
-
-        for (DataType dataType : values()) {
-            if (dataType.data.equals(data)) {
-                return dataType;
-            }
-        }
-      throw  new IllegalArgumentException(data);
+        this.type = args;
     }
 }

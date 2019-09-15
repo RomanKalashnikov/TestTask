@@ -1,66 +1,68 @@
 package com.kalashnikov.test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 class Sort {
-    private Configurator configurator;
     private Comparator comparator;
-    private ArgumentsParser parser;
+    private List<File> input;
+    private File out;
+    PrepareArgs prepareArgs;
 
-
-    Sort(ArgumentsParser argumentsParser) {
-        this.configurator = configurator;
-//        this.comparator = new Comparator(configurator.getDataType(), configurator.getSortType());
-        this.comparator = new Comparator(argumentsParser.dataType,argumentsParser.sortType);
-
+    public Sort(Comparator comparator, List<File> input, File out, PrepareArgs prepareArgs) {
+        this.comparator = comparator;
+        this.input = input;
+        this.out = out;
+        this.prepareArgs = prepareArgs;
     }
 
     void mergeAllFiles() {
-        final File reduced = ArgumentsParser.getInputFiles().stream().reduce(this::mergeFiles).orElse(ArgumentsParser.getInputFiles().get(0));
+        final File reduced = input.stream().reduce(this::mergeFile).orElse(input.get(0));
         try {
-            Files.copy(reduced.toPath(), ArgumentsParser.getFileResult().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(reduced.toPath(), out.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             System.out.println("Невозможно скопировать результат слияния файлов");
             e.printStackTrace();
-
         }
-
     }
 
-    private File mergeFiles(File file1, File file2) {
+    private File mergeFile(File file1, File file2) {
         try {
             File out = File.createTempFile("result", ".tmp");
             out.deleteOnExit();
             try (BufferedReader fileReader1 = new BufferedReader(new FileReader(file1));
                  BufferedReader fileReader2 = new BufferedReader(new FileReader(file2));
                  BufferedWriter fileOut = new BufferedWriter(new FileWriter(out))) {
-                String s1 = comparator.checkLine(fileReader1.readLine());
-                String s2 = comparator.checkLine(fileReader2.readLine());
-                while (s1 != null && s2 != null) {
+                Comparable s1 = prepareArgs.prepare(fileReader1.readLine());
+                Comparable s2 = prepareArgs.prepare(fileReader2.readLine());
+                while (fileReader1.ready() && fileReader2.ready()) {
                     final int compare = comparator.compare(s1, s2);
                     if (compare <= 0) {
                         writeLine(fileOut, s1);
-                        s1 = fileReader1.readLine();
+                        s1 = prepareArgs.prepare(fileReader1.readLine());
                     } else {
                         writeLine(fileOut, s2);
-                        s2 = fileReader2.readLine();
+                        s2 = prepareArgs.prepare(fileReader2.readLine());
                     }
                 }
-                if (s1 == null) {
-                    writeEndOfFile(s2, fileOut, fileReader2);
-                } else {
+                if (fileReader1.ready()) {
                     writeEndOfFile(s1, fileOut, fileReader1);
+                }
+                if(fileReader2.ready()){
+                    writeEndOfFile(s2, fileOut, fileReader2);
                 }
                 return out;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-
-
+            throw new MyEx();
         }
-        
     }
 
     private void writeEndOfFile(Comparable lastValue, BufferedWriter writer, BufferedReader fileDataReader) throws
@@ -78,7 +80,7 @@ class Sort {
             writer.write(line.toString());
             writer.newLine();
         } catch (IOException e) {
-            System.err.println("can't write line to file ");
+            System.err.println("Невозможно записать строку в файл");
         }
     }
 }

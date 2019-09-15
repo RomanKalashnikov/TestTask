@@ -1,21 +1,26 @@
 package com.kalashnikov.test;
 
 public class Main {
+    private ArgumentsParser containerArg;
+    private Comparator comparator;
+    private PrepareArgs prepareArgs;
+    private Sort sorter;
     public static void main(String[] args) {
-//        Configurator appConfig = new Configurator(args);
-//        new Sort(appConfig).mergeAllFiles();
-        ArgumentsParser parser = new ArgumentsParser();
-        parser.parsingArg(args);
-        new Sort(parser).mergeAllFiles();
 
-        System.out.println(parser.getInputFiles());
-        System.out.println(parser.getDataTypeArray());
-        System.out.println(parser.getSortTypeArray());
-        System.out.println(parser.getKeysList());
-        System.out.println(parser.getFileResult());
-
-        System.out.println(parser.sortType + " тип сортировки");
-        System.out.println(parser.dataType + " тип данных");
+        try {
+            new Main().run(args);
+        } catch (MyEx e) {
+            System.err.printf("Program error: %s", e.getMessage());
+        }
     }
 
+
+    private void run(String[] args) {
+        containerArg = new ArgumentsParser(args);
+        containerArg.parsingArg();
+        comparator = new FabricComp().getComp(containerArg.getDataType(), containerArg.getSortType());
+        prepareArgs = new PrepareArgs(containerArg.getDataType());
+        sorter = new Sort(comparator, containerArg.getInputFiles(), containerArg.getFileResult(), prepareArgs);
+        sorter.mergeAllFiles();
+    }
 }

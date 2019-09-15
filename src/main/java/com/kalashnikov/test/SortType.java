@@ -1,22 +1,24 @@
 package com.kalashnikov.test;
 
 public enum SortType {
-    UPWARD("-a"),
-    DOWNWARD("-d");
+    DESC("-d"),
+    ASC("-a");
 
-    public final String args ;
+    final String data;
 
     SortType(String args) {
-       this.args = args;
+        this.data = args;
     }
 
-    public static SortType of(String s){
-        for (SortType sortType : values()) {
-                if(sortType.args.equals(s)){
-                    return sortType;
+    public static SortType of(String data) {
 
-                }
+        for (SortType sortType : values()) {
+            if (sortType.data.equals(data)) {
+                return sortType;
+
+            }
         }
-        throw new IllegalArgumentException(s);
+        throw new IllegalArgumentException(data);
+
     }
 }

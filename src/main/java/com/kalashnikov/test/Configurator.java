@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Editor {
+public class Configurator {
     private DataType dataType;
 
     private SortType sortType;
     private List<File> inputFiles = new ArrayList<>();
     private File fileResult;
 
-    public Editor(DataType dataType, SortType sortType, List<File> inputFiles, File fileResult) {
+    public Configurator(DataType dataType, SortType sortType, List<File> inputFiles, File fileResult) {
         this.dataType = dataType;
         this.sortType = sortType;
         this.inputFiles = inputFiles;
@@ -20,13 +20,14 @@ public class Editor {
     }
 
 
-    Editor(String[] args) {
+    Configurator(String[] args) {
         boolean hasTypeSort = false;
         try {
             this.sortType = SortType.of(args[0]);
             hasTypeSort = true;
         } catch (IllegalArgumentException e) {
-            this.sortType = SortType.DOWNWARD;
+            System.out.println(e);
+            this.sortType = SortType.DESC;
         }
         if ((hasTypeSort && args.length < 4) || (!hasTypeSort && args.length < 3)) {
             throw new IllegalArgumentException("Неверное количество аргументов");
@@ -39,7 +40,9 @@ public class Editor {
                 inputFiles.add(inFile);
             }
             else {
-                System.err.println("Входной файл " + args[i] + " пустой");
+                System.err.println("Неправильный путь входного файла " + args[i] + " и он не будет добавлен в конечный" +
+                        " отсортированный файл ");
+
 
             }
         }

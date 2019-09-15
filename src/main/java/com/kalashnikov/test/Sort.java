@@ -5,19 +5,22 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 class Sort {
-    private Editor editor;
+    private Configurator configurator;
     private Comparator comparator;
+    private ArgumentsParser parser;
 
 
-    Sort(Editor editor) {
-        this.editor = editor;
-        this.comparator = new Comparator(editor.getDataType(), editor.getSortType());
+    Sort(ArgumentsParser argumentsParser) {
+        this.configurator = configurator;
+//        this.comparator = new Comparator(configurator.getDataType(), configurator.getSortType());
+        this.comparator = new Comparator(argumentsParser.dataType,argumentsParser.sortType);
+
     }
 
     void mergeAllFiles() {
-        final File reduced = editor.getInputFiles().stream().reduce(this::mergeFiles).orElse(editor.getInputFiles().get(0));
+        final File reduced = ArgumentsParser.getInputFiles().stream().reduce(this::mergeFiles).orElse(ArgumentsParser.getInputFiles().get(0));
         try {
-            Files.copy(reduced.toPath(), editor.getFileResult().toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(reduced.toPath(), ArgumentsParser.getFileResult().toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             System.out.println("Невозможно скопировать результат слияния файлов");
             e.printStackTrace();
@@ -33,8 +36,8 @@ class Sort {
             try (BufferedReader fileReader1 = new BufferedReader(new FileReader(file1));
                  BufferedReader fileReader2 = new BufferedReader(new FileReader(file2));
                  BufferedWriter fileOut = new BufferedWriter(new FileWriter(out))) {
-                String s1 = fileReader1.readLine();
-                String s2 = fileReader2.readLine();
+                String s1 = comparator.checkLine(fileReader1.readLine());
+                String s2 = comparator.checkLine(fileReader2.readLine());
                 while (s1 != null && s2 != null) {
                     final int compare = comparator.compare(s1, s2);
                     if (compare <= 0) {

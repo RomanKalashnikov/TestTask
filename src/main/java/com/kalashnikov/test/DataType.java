@@ -1,20 +1,23 @@
 package com.kalashnikov.test;
 
 public enum DataType {
-    STRING("-s"),
-    INTEGER("-i");
-    private final String data;
+    INTEGER("-i"),
+    STRING("-s");
 
-    DataType(String data) {
-        this.data = data;
+
+    final String data;
+
+    DataType(String args) {
+        this.data = args;
     }
 
-    public static DataType of(String data){
-        for (DataType args: values()) {
-            if(args.data.equals(data)){
-                return args;
+    public static DataType  of(String data) {
+
+        for (DataType dataType : values()) {
+            if (dataType.data.equals(data)) {
+                return dataType;
             }
         }
-        throw new IllegalArgumentException(data);
+      throw  new IllegalArgumentException(data);
     }
 }

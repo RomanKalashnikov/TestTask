@@ -1,6 +1,5 @@
-package com.kalashnikov.test;
 
-class IntComp extends Comparator<Integer> {
+public class IntComp extends Comparator<Integer> {
     private SortType sortType;
 
     IntComp(SortType sortType) {

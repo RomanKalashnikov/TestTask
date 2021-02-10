@@ -1,6 +1,5 @@
-package com.kalashnikov.test;
 
-class MyEx extends RuntimeException {
+public class MyEx extends RuntimeException {
 
     MyEx() {
     }

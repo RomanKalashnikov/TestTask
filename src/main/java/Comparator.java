@@ -1,6 +1,5 @@
-package com.kalashnikov.test;
 
-abstract class Comparator<T> {
+public abstract class Comparator<T> {
 
     Comparator() {
 

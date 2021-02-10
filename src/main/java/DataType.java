@@ -1,4 +1,3 @@
-package com.kalashnikov.test;
 
 public enum DataType {
     INTEGER("-i"),

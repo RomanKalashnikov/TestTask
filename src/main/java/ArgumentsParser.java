@@ -1,10 +1,9 @@
-package com.kalashnikov.test;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-class ArgumentsParser {
+public class ArgumentsParser {
     private static final String KEY_PATTREN = "^-\\w";
     private final String[] args;
     private DataType dataType;

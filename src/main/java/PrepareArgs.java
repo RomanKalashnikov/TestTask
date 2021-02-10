@@ -1,6 +1,5 @@
-package com.kalashnikov.test;
 
-class PrepareArgs {
+public class PrepareArgs {
     private static final String KEY_PATTREN_INTEGER = "[^0-9]";
     private static final String KEY_PATTREN_STRING = "[\\d\\W]";
     private DataType dataType;

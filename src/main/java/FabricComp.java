@@ -1,4 +1,3 @@
-package com.kalashnikov.test;
 
 public class FabricComp {
 

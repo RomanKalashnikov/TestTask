@@ -1,5 +1,3 @@
-package com.kalashnikov.test;
-
 public class Main {
     private ArgumentsParser containerArg;
     private Comparator comparator;

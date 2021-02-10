@@ -1,6 +1,5 @@
-package com.kalashnikov.test;
 
-class StringComp extends Comparator<String> {
+public class StringComp extends Comparator<String> {
     private SortType sortType;
 
     StringComp(SortType sortType) {
